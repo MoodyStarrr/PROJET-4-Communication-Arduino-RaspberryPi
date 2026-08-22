@@ -24,5 +24,4 @@ typedef struct {
   uint8_t end;// 1 octet
 }frame_t; // Message Structure
 
-uint8_t crc8(const uint8_t * payload, size_t payload_length);
 #endif
