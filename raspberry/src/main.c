@@ -11,7 +11,7 @@ int main(void){
   frame_t message = {
     .start = FRAME_START,
     .command = CMD_SENSOR_READ,
-    .length = 8,
+    .length = 5,
     .payload = {0xA6,0x12,0x02,0x10,0x14,0x00,0x00,0x00},
     .end = FRAME_STOP,
   }; // Trame de message de test
@@ -20,7 +20,7 @@ int main(void){
   buffer[1] = message.length;
   memcpy(buffer + 2, message.payload, 8);
 
-  message.crc = crc8(buffer,8);
+  message.crc = crc8(buffer,10);
 
   printf("Voici la trame du message:\n");
   printf("start = %02X\n",message.start);

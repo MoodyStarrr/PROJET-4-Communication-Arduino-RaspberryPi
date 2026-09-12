@@ -1,0 +1,33 @@
+#ifndef FRAMER_H
+#define FRAMER_H
+
+#include "protocol.h"
+#include <stdbool.h>
+// Pas besoin d'include stdint deja fait dans protocol.h
+
+typedef enum {
+  WAIT_START,
+  READ_COMMAND,
+  READ_LENGTH,
+  READ_PAYLOAD,
+  READ_CRC,
+  READ_END,
+}framer_internal_state_t;
+
+typedef struct {
+  framer_internal_state_t state;
+  frame_t current_message;
+  bool escape; // Utile pour le Byte Stuffing
+}framer_context_t;
+
+typedef enum {
+  FRAME_IN_PROGRESS,
+  FRAME_VALID,
+  FRAME_INVALID,
+}framer_return_t;
+
+framer_return_t frame_parser(uint8_t received, framer_context_t * ctx);
+
+void framer_reset(framer_context_t * ctx)
+
+#endif

@@ -7,6 +7,7 @@
 #define SIZE_MAX_PAYLOAD 8 // Maximum size for payload 
 #define SIZE_MAX_MSG 24 // Maximum size for what's in between start and end * 2 + start and end size
 #define FRAME_START 0x7E // Start communication byte
+#define FRAME_ESCAPE 0x7D // Start communication byte
 #define FRAME_STOP 0xFF // End communication byte
 
 typedef enum {
