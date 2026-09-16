@@ -1,8 +1,11 @@
 #ifndef FRAMER_H
 #define FRAMER_H
 
+#define _POSIX_C_SOURCE 200809L
+
 #include "protocol.h"
 #include <stdbool.h>
+#include <pthread.h>
 // Pas besoin d'include stdint deja fait dans protocol.h
 
 typedef enum {
@@ -18,6 +21,9 @@ typedef struct {
   framer_internal_state_t state;
   frame_t current_message;
   bool escape; // Utile pour le Byte Stuffing
+  uint8_t payload_index;
+  pthread_cond_t ready;
+  pthread_mutex_t mutex;
 }framer_context_t;
 
 typedef enum {
