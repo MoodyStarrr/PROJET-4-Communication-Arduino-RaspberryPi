@@ -1,5 +1,7 @@
 #include "framer.h"
+#include "crc.h"
 #include <string.h>
+#include <assert.h>
 
 void framer_reset(framer_context_t * ctx){
   ctx->escape = 0;
@@ -35,7 +37,7 @@ framer_return_t frame_parser(uint8_t received, framer_context_t * ctx){
 
     case READ_LENGTH :
       if(byte_stuffing_check(received,ctx)){
-        if(received > SIZE_MAX_PAYLOAD){
+        if(received > SIZE_MAX_PAYLOAD || received == 0){
           framer_reset(ctx);
           return FRAME_INVALID;
         }else{
@@ -78,16 +80,13 @@ framer_return_t frame_parser(uint8_t received, framer_context_t * ctx){
 
     case READ_END:
       if( received == FRAME_STOP ){
-        pthread_cond_signal(ctx->ready); // Besoin de mutex ? ou le thread de reception fera un lock qui empechera le reset dans la ligne suivante ?
-        framer_reset(ctx);
-        ctx->state = WAIT_START;
-        return FRAME_VALID;// Si la fonction framer dit que le message est pret + reset + state au bon endroit à quoi sert le retour frame valid ?
+        return FRAME_VALID;
       }
       framer_reset(ctx);
-      ctx->state = WAIT_START;
       return FRAME_INVALID;
 
   }
+  assert(0);
 }
 
 
