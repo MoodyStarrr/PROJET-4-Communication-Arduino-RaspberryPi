@@ -13,7 +13,7 @@ ALL_RASPBERRY_SRC = $(filter-out $(R_SRC),$(RASPBERRY_SRC)) $(R_SRC)
 RASPBERRY_OBJ = $(ALL_RASPBERRY_SRC:raspberry/src/%.c=raspberry/build/%.o)
 BIN = Raspberry_side
 
-.PHONY: all sync_raspberry sync_arduino flash clean 
+.PHONY: all sync_raspberry sync_arduino flash clean
 
 all: $(BIN)
 
@@ -34,6 +34,12 @@ raspberry/build/%.o: raspberry/src/%.c | sync_raspberry
 	@mkdir -p raspberry/build
 	$(CC) $(CFLAGS) -c $^ -o $@
 	@# $^ pour appeler tous les .c présents dans src/
+
+## test variables 
+CFLAGS_TEST = -Wall -Wextra -g -O0 -Icommon/ -std=c99
+test_%: misc/test_%.c  $(wildcard common/*) # On regarde tout ce qu'il y a dans common/, les .c pour la compil et les .h au cas ou ils auraient changé
+	@$(CC) $(CFLAGS_TEST) $(filter %.c, $^) -o $@  # filtre ou on garde seulement les .c car le compilateur n'accepte pas les .h
+	./$@
 
 ## arduino side variable declaration
 COMPILATEUR = avr-gcc
@@ -75,5 +81,5 @@ arduino/build/%.o: arduino/src/%.c | sync_arduino
 	$(COMPILATEUR) $(OPTIONS) -c $^ -o $@
 
 clean:
-	@$(RM) -r $(HEX) $(ELF) $(BIN) arduino/build arduino/include raspberry/build raspberry/include
+	@$(RM) -r $(HEX) $(ELF) $(BIN) arduino/build arduino/include raspberry/build raspberry/include test_*
 	clear
